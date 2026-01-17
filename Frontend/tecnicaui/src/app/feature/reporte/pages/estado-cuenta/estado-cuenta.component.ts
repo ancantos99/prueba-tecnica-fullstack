@@ -12,7 +12,7 @@ import { CuentaService } from '../../../../core/services/cuenta.service';
 @Component({
   selector: 'app-estado-cuenta',
   standalone: true,
-  imports: [NgForOf,NgIf, RouterLink, FormsModule, DatePipe, CommonModule],
+  imports: [NgForOf,NgIf, FormsModule, DatePipe, CommonModule],
   templateUrl: './estado-cuenta.component.html',
   styleUrl: './estado-cuenta.component.css'
 })

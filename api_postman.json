@@ -1,0 +1,161 @@
+{
+  "info": {
+    "_postman_id": "11eeffdc-2b3c-41bd-ba8f-73ca294a0e4f",
+    "name": "pruebatecnica",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "699524"
+  },
+  "item": [
+    {
+      "name": "api/clientes",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"nombre\": \"Andres Cantos\",\r\n  \"genero\": \"M\",\r\n  \"edad\": 23,\r\n  \"identificacion\": \"0981794940\",\r\n  \"direccion\": \"Calle 1\",\r\n  \"telefono\": \"0981794940\",\r\n  \"password\": \"1234\",\r\n  \"estado\": true\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/clientes",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "clientes"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "api/clientes",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/clientes",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "clientes"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "api/cuentas",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/ceuntas",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "ceuntas"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "api/movimientos/cuenta/id",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/movimientos/cuenta/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "movimientos",
+            "cuenta",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "api/movimientos",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"cuentaid\": \"2\",\r\n  \"tipomovimiento\": \"DEBITO\",\r\n  \"valor\": 200\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/movimientos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "movimientos"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "api/movimientos/reportes/pdf",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"clienteid\": \"1\",\r\n    \"fechainicio\": \"2026-01-01T00:00\",\r\n    \"fechafin\": \"2026-01-31T23:59\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/movimientos/reportes/pdf\n",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "movimientos",
+            "reportes",
+            "pdf\n"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

@@ -40,7 +40,7 @@ workspacePruebaTecnica/
 ### Pasos para iniciar el proyecto
 1.  **Clonar el repositorio:**
     ```bash
-    git clone ...
+    git clone https://github.com/ancantos99/prueba-tecnica-fullstack.git
     cd workspace
     ```
 2.  **Construir y levantar los contenedores:**
