@@ -1,0 +1,5 @@
+package com.prueba.tecnica.repository;
+
+public class ClienteRepository {
+
+}

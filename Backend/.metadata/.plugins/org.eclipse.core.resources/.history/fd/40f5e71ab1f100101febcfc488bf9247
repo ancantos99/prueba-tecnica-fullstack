@@ -1,0 +1,37 @@
+package com.prueba.tecnica.service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
+import com.prueba.tecnica.model.dto.MovimientoResponseDto;
+import com.prueba.tecnica.model.entity.Movimiento;
+import com.prueba.tecnica.repository.CuentaRepository;
+import com.prueba.tecnica.repository.MovimientoRepository;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class MovimientoService {
+	private final MovimientoRepository movimientoRepository;
+    private final CuentaRepository cuentaRepository;
+    
+    public List<MovimientoResponseDto> listarPorCuenta(Long cuentaId) {
+        return movimientoRepository.findByCuentaCuentaid(cuentaId)
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+    
+    private MovimientoResponseDto mapToResponse(Movimiento movimiento) {
+        MovimientoResponseDto dto = new MovimientoResponseDto();
+        dto.setMovimientoId(movimiento.getMovimientoid());
+        dto.setFecha(movimiento.getFecha());
+        dto.setTipoMovimiento(movimiento.getTipomovimiento());
+        dto.setValor(movimiento.getValor());
+        dto.setSaldo(movimiento.getSaldo());
+        return dto;
+    }
+}

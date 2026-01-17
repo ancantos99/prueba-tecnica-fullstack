@@ -1,0 +1,14 @@
+package com.prueba.tecnica.model.dto;
+
+import java.math.BigDecimal;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter @Setter
+public class MovimientoRequestDto {
+
+    private Long cuentaId;
+    private String tipoMovimiento; // CREDITO o DEBITO
+    private BigDecimal valor;
+}

@@ -1,0 +1,6 @@
+package com.prueba.tecnica.reportes;
+
+@Component
+public class PdfReporteGenerator {
+
+}

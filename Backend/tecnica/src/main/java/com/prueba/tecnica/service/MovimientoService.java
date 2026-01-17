@@ -1,0 +1,168 @@
+package com.prueba.tecnica.service;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Base64;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.prueba.tecnica.exception.ResourceNotFoundException;
+import com.prueba.tecnica.exception.SaldoNoDisponibleException;
+import com.prueba.tecnica.model.dto.ClienteDto;
+import com.prueba.tecnica.model.dto.CuentaDto;
+import com.prueba.tecnica.model.dto.MovimientoRequestDto;
+import com.prueba.tecnica.model.dto.MovimientoResponseDto;
+import com.prueba.tecnica.model.dto.ReporteEstadoCuentaDto;
+import com.prueba.tecnica.model.entity.Cliente;
+import com.prueba.tecnica.model.entity.Cuenta;
+import com.prueba.tecnica.model.entity.Movimiento;
+import com.prueba.tecnica.reportes.PdfReporteGenerador;
+import com.prueba.tecnica.repository.ClienteRepository;
+import com.prueba.tecnica.repository.CuentaRepository;
+import com.prueba.tecnica.repository.MovimientoRepository;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+@Transactional
+public class MovimientoService {
+	private final MovimientoRepository movimientoRepository;
+    private final CuentaRepository cuentaRepository;
+    private final ClienteService clienteService;
+    private final CuentaService cuentaService;
+    private final PdfReporteGenerador pdfReporteGenerador;
+    
+    
+    public MovimientoResponseDto registrarMovimiento(MovimientoRequestDto request) {
+
+        Cuenta cuenta = cuentaRepository.findById(request.getCuentaid())
+                .orElseThrow(() -> new ResourceNotFoundException("Cuenta no encontrada"));
+
+        BigDecimal saldoActual = cuenta.getSaldoinicial();
+
+        BigDecimal valor = request.getValor();
+        String tipo = request.getTipomovimiento().toUpperCase();
+        
+        if ("DEBITO".equals(tipo)) {
+            if (saldoActual.compareTo(BigDecimal.ZERO) <= 0) {
+                throw new SaldoNoDisponibleException("Saldo no disponible");
+            }
+            valor = valor.negate(); // convierte a negativo
+        }
+
+        BigDecimal nuevoSaldo = saldoActual.add(valor); //si es credito se suma y si es debito se resta
+        
+        if (nuevoSaldo.compareTo(BigDecimal.ZERO) < 0) {
+        	throw new SaldoNoDisponibleException("Su Saldo es insuficiente para realizar esta transacción");
+        }
+
+        Movimiento movimiento = new Movimiento();
+        movimiento.setCuenta(cuenta);
+        //movimiento.setFecha(LocalDateTime.now());
+        movimiento.setFecha(request.getFecha() != null ? request.getFecha() : LocalDateTime.now() );
+        movimiento.setTipomovimiento(tipo);
+        movimiento.setSaldoanterior(saldoActual);
+        movimiento.setValor(valor);
+        movimiento.setSaldo(nuevoSaldo);
+
+        cuenta.setSaldoinicial(nuevoSaldo); //actualizo el saldo para el siguiente movimiento
+
+        Movimiento movcreado = movimientoRepository.save(movimiento);
+        cuentaRepository.save(cuenta);
+
+        return mapToResponse(movcreado);
+    }
+    
+    @Transactional(readOnly = true)
+    public List<MovimientoResponseDto> listarPorCuenta(Long cuentaId) {
+        return movimientoRepository.findByCuentaCuentaid(cuentaId)
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+    
+    @Transactional(readOnly = true)
+    public List<MovimientoResponseDto> listarPorClienteYRangoFechas(Long clienteId, 
+    		LocalDateTime inicio, LocalDateTime fin) {
+        return movimientoRepository.findByCuentaClienteClienteidAndFechaBetween(clienteId, inicio, fin)
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+    
+    @Transactional(readOnly = true)
+    public ReporteEstadoCuentaDto reporteEstadoCuenta(Long clienteId, 
+    		LocalDateTime inicio, LocalDateTime fin) {
+        ClienteDto cliente = clienteService.obtenerCliente(clienteId);
+        List<CuentaDto> lstcuentas = cuentaService.listarPorCliente(clienteId);
+        BigDecimal totalDebitos = BigDecimal.ZERO;
+        BigDecimal totalCreditos = BigDecimal.ZERO;     
+        BigDecimal totaldebitocta = BigDecimal.ZERO;
+        BigDecimal totalcreditocta = BigDecimal.ZERO;
+        for (CuentaDto cuentadto : lstcuentas) {
+			List<MovimientoResponseDto> movimientos = movimientoRepository
+					.findByCuentaCuentaidAndFechaBetween(cuentadto.getCuentaid(), inicio, fin)
+					.stream()
+					.map(this::mapToResponse)
+					.toList();
+			totaldebitocta = BigDecimal.ZERO;
+	        totalcreditocta = BigDecimal.ZERO;
+			for (MovimientoResponseDto m : movimientos) {
+				if (m.getTipomovimiento().equals("DEBITO")){
+	                totalDebitos = totalDebitos.add(m.getValor());
+	                totaldebitocta = totaldebitocta.add(m.getValor());
+	            } else {
+	                totalCreditos = totalCreditos.add(m.getValor());
+	                totalcreditocta = totalcreditocta.add(m.getValor());
+	            }
+			}
+			cuentadto.setTotalcredito(totalcreditocta);
+			cuentadto.setTotaldebito(totaldebitocta);
+			cuentadto.setMovimientos(movimientos);
+		}
+        ReporteEstadoCuentaDto repdto = ReporteEstadoCuentaDto.builder()
+        		.cliente(cliente)
+        		.cuentas(lstcuentas)
+        		.fechainicio(inicio)
+        		.fechafin(fin)
+        		.totaldebito(totalDebitos)
+        		.totalcredito(totalCreditos)
+        		.build();
+        
+        byte[] pdfbytes = pdfReporteGenerador.generarEstadoCuentasCliente(repdto);
+        repdto.setPdfbase64(Base64.getEncoder().encodeToString(pdfbytes));
+        		
+        return repdto;               
+    }
+    
+    private MovimientoResponseDto mapToResponse(Movimiento movimiento) {
+        MovimientoResponseDto dto = new MovimientoResponseDto();
+        dto.setMovimientoid(movimiento.getMovimientoid());
+        dto.setFecha(movimiento.getFecha());
+        dto.setTipomovimiento(movimiento.getTipomovimiento());
+        dto.setValor(movimiento.getValor());
+        dto.setSaldoanterior(movimiento.getSaldoanterior());
+        dto.setSaldo(movimiento.getSaldo());        
+        
+        Cuenta objcuenta = movimiento.getCuenta();
+        CuentaDto ctadto = CuentaDto.builder()
+        		.cuentaid(objcuenta.getCuentaid())
+        		.numerocuenta(objcuenta.getNumerocuenta())
+        		.saldoinicial(objcuenta.getSaldoinicial())
+        		.tipocuenta(objcuenta.getTipocuenta())
+        		.build();
+        dto.setCuenta(ctadto);
+        
+        Cliente objcliente = objcuenta.getCliente();
+        ClienteDto clidto = ClienteDto.builder()
+        		.clienteid(objcliente.getClienteid())
+        		.nombre(objcliente.getNombre())
+        		.identificacion(objcliente.getIdentificacion())
+        		.build();
+        dto.setCliente(clidto);        
+        return dto;
+    }
+}

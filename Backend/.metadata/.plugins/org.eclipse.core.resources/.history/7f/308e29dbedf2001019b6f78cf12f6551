@@ -1,0 +1,52 @@
+package com.prueba.tecnica.reportes;
+
+import java.io.ByteArrayOutputStream;
+
+import org.springframework.stereotype.Component;
+
+import com.lowagie.text.Chunk;
+import com.lowagie.text.Document;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Paragraph;
+import com.prueba.tecnica.model.dto.CuentaDto;
+import com.prueba.tecnica.model.dto.ReporteEstadoCuentaDto;
+
+@Component
+public class PdfReporteGenerator {
+
+	public byte[] generarEstadoCuentasCliente( ReporteEstadoCuentaDto reportedto) {
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+        Document document = new Document(PageSize.A4);
+        
+        document.add(new Paragraph("ESTADO DE CUENTA"));
+        document.add(new Paragraph("Cliente: " + reportedto.getCliente().getNombre()));
+        document.add(new Paragraph(
+                "Periodo: " + reportedto.getFechainicio() + " - " + reportedto.getFechafin()
+        ));
+        document.add(Chunk.NEWLINE);
+        for (CuentaDto cuentadto : reportedto.getCuentas()) {
+        	document.add(new Paragraph("Cuenta: " + cuentadto.getNumerocuenta() ));
+            document.add(new Paragraph("Saldo: " + cuentadto.getSaldoinicial() ));
+            
+            /*List<MovimientoResponseDto> cuentamovimientos = lstmovimiento.stream()
+            		.filter(m -> m.getCuenta().getNumerocuenta().trim().equalsIgnoreCase(cuentadto.getNumerocuenta()))
+            		.toList()*/
+            
+            for (var m : cuentadto.getMovimientos()) {
+                /*document.add(new Paragraph(
+                        m.getFecha() + " - " +
+                        m.getTipo() + " - " +
+                        m.getValor()
+                ));*/
+            }
+            document.add(Chunk.NEWLINE);
+            
+		}
+        document.add(new Paragraph("TOTAL DÉBITOS: " + reportedto.getTotaldebito()));
+        document.add(new Paragraph("TOTAL CRÉDITOS: " + reportedto.getTotalcredito()));
+        
+        document.close();
+        return out.toByteArray();
+        
+	}
+}

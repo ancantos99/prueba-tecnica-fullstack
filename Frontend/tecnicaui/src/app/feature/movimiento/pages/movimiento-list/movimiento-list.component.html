@@ -1,0 +1,33 @@
+<h2>Movimientos Por Cuenta</h2>
+
+<div class="toolbar">
+    <select [(ngModel)]="cuentaSeleccionada" (change)="cargarMovimientos()">
+        <option value="">Seleccione una cuenta</option>
+        <option *ngFor="let c of cuentas" [value]="c.cuentaid">
+            {{ c.numerocuenta }} - {{ c.clientenombre }}
+        </option>
+    </select>
+
+    <input type="text" placeholder="Buscar por tipo de movimiento" [(ngModel)]="filtro"/>
+
+    <button routerLink="/movimientos/registrar">Registrar</button>
+</div>
+
+<table>
+    <tr>
+    <th>Cuenta</th>
+    <th>Fecha</th>
+    <th>Tipo Movimiento</th>
+    <th>Saldo Anterior</th>
+    <th>Valor</th>
+    <th>Saldo</th>    
+    </tr>
+    <tr *ngFor="let m of movimientosFiltrados()">
+    <td>{{m.cuenta.numerocuenta}} - {{m.cliente.nombre}}</td>
+    <td>{{ m.fecha | date:'dd/MM/yyyy HH:mm' }}</td>
+    <td>{{m.tipomovimiento}}</td>
+    <td>{{m.saldoanterior | currency:'USD':'symbol':'1.2-2'}}</td>
+    <td>{{m.valor}}</td>
+    <td>{{m.saldo | currency:'USD':'symbol':'1.2-2'}}</td>    
+    </tr>
+</table>

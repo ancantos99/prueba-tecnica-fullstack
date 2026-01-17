@@ -1,0 +1,21 @@
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: ptecnica-db
+    environment:
+      POSTGRES_DB: prueba
+      POSTGRES_USER: puser
+      POSTGRES_PASSWORD: ppass
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./BaseDatos.sql:/docker-entrypoint-initdb.d/BaseDatos.sql
+
+  app:
+    build: .
+    container_name: ptecnica-api
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres

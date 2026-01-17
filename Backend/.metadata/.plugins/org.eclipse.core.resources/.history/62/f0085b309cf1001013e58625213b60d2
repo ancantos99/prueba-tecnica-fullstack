@@ -1,0 +1,13 @@
+package com.prueba.tecnica.repository;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.prueba.tecnica.model.entity.Cuenta;
+
+public interface CuentaRepository extends JpaRepository<Cuenta, Long>{
+	Optional<Cuenta> findByNumerocuenta(String numerocuenta);
+    List<Cuenta> findByClienteClienteid(Long clienteid);
+}

@@ -1,0 +1,64 @@
+package com.prueba.tecnica.controller;
+
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.prueba.tecnica.model.dto.CuentaDto;
+import com.prueba.tecnica.service.CuentaService;
+
+import lombok.RequiredArgsConstructor;
+
+@RestController
+@RequestMapping("/api/cuentas")
+@RequiredArgsConstructor
+public class CuentaController {
+
+	private final CuentaService cuentaService;
+	
+	@PostMapping
+    public ResponseEntity<CuentaDto> crearCuenta(
+            @RequestBody CuentaDto request) {
+        return new ResponseEntity<>(
+                cuentaService.crearCuenta(request),
+                HttpStatus.CREATED //201
+        );
+    }
+
+    @GetMapping
+    public ResponseEntity<List<CuentaDto>> listarCuentas() {
+        return ResponseEntity.ok(cuentaService.listarCuentas());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CuentaDto> obtenerCuenta(@PathVariable Long id) {
+        return ResponseEntity.ok(cuentaService.obtenerCuenta(id));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CuentaDto> actualizarCuenta(
+            @PathVariable Long id,
+            @RequestBody CuentaDto request) {
+        return ResponseEntity.ok(cuentaService.actualizarCuenta(id, request));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminarCuenta(@PathVariable Long id) {
+        cuentaService.eliminarCuenta(id);
+        return ResponseEntity.noContent().build(); //204
+    }
+	
+	@GetMapping("/cliente/{clienteid}")
+    public ResponseEntity<List<CuentaDto>> listarPorCliente(@PathVariable Long clienteid) {
+        return ResponseEntity.ok(cuentaService.listarPorCliente(clienteid));
+    }
+}

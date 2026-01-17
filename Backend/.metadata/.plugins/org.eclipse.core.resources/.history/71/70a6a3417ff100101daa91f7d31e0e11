@@ -1,0 +1,5 @@
+package com.prueba.tecnica.exception;
+
+public class ResourceNotFoundException {
+
+}

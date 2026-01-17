@@ -1,0 +1,5 @@
+package com.prueba.tecnica.service.impl;
+
+public class CuentaServiceImpl {
+
+}

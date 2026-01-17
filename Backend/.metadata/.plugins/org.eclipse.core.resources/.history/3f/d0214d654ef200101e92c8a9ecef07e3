@@ -1,0 +1,80 @@
+package com.prueba.tecnica.service;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.prueba.tecnica.exception.ResourceNotFoundException;
+import com.prueba.tecnica.exception.SaldoNoDisponibleException;
+import com.prueba.tecnica.model.dto.MovimientoRequestDto;
+import com.prueba.tecnica.model.dto.MovimientoResponseDto;
+import com.prueba.tecnica.model.entity.Cuenta;
+import com.prueba.tecnica.model.entity.Movimiento;
+import com.prueba.tecnica.repository.CuentaRepository;
+import com.prueba.tecnica.repository.MovimientoRepository;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+@Transactional
+public class MovimientoService {
+	private final MovimientoRepository movimientoRepository;
+    private final CuentaRepository cuentaRepository;
+    
+    
+    public MovimientoResponseDto registrarMovimiento(MovimientoRequestDto request) {
+
+        Cuenta cuenta = cuentaRepository.findById(request.getCuentaId())
+                .orElseThrow(() -> new ResourceNotFoundException("Cuenta no encontrada"));
+
+        BigDecimal saldoActual = cuenta.getSaldoinicial();
+
+        BigDecimal valor = request.getValor();
+        String tipo = request.getTipoMovimiento().toUpperCase();
+        
+        if ("DEBITO".equals(tipo)) {
+            if (saldoActual.compareTo(BigDecimal.ZERO) <= 0) {
+                throw new SaldoNoDisponibleException("Saldo no disponible");
+            }
+            valor = valor.negate(); // convierte a negativo
+        }
+
+        BigDecimal nuevoSaldo = saldoActual.add(valor); //si es credito se suma y si es debito se resta
+
+        Movimiento movimiento = new Movimiento();
+        movimiento.setCuenta(cuenta);
+        movimiento.setFecha(LocalDateTime.now());
+        movimiento.setTipomovimiento(tipo);
+        movimiento.setValor(valor);
+        movimiento.setSaldo(nuevoSaldo);
+
+        cuenta.setSaldoinicial(nuevoSaldo); //actualizo el saldo para el siguiente movimiento
+
+        movimientoRepository.save(movimiento);
+        cuentaRepository.save(cuenta);
+
+        return mapToResponse(movimiento);
+    }
+    
+    @Transactional(readOnly = true)
+    public List<MovimientoResponseDto> listarPorCuenta(Long cuentaId) {
+        return movimientoRepository.findByCuentaCuentaid(cuentaId)
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+    
+    private MovimientoResponseDto mapToResponse(Movimiento movimiento) {
+        MovimientoResponseDto dto = new MovimientoResponseDto();
+        dto.setMovimientoId(movimiento.getMovimientoid());
+        dto.setFecha(movimiento.getFecha());
+        dto.setTipoMovimiento(movimiento.getTipomovimiento());
+        dto.setValor(movimiento.getValor());
+        dto.setSaldo(movimiento.getSaldo());
+        return dto;
+    }
+}

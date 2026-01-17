@@ -1,0 +1,28 @@
+package com.prueba.tecnica.controller;
+
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.prueba.tecnica.model.dto.CuentaDto;
+import com.prueba.tecnica.service.CuentaService;
+
+import lombok.RequiredArgsConstructor;
+
+@RestController
+@RequestMapping("/api/cuentas")
+@RequiredArgsConstructor
+public class CuentaController {
+
+	private final CuentaService cuentaService;
+	
+	
+	@GetMapping("/cliente/{clienteid}")
+    public ResponseEntity<List<CuentaDto>> listarPorCliente(@PathVariable Long clienteid) {
+        return ResponseEntity.ok(cuentaService.listarPorCliente(clienteid));
+    }
+}

@@ -1,0 +1,91 @@
+package com.prueba.tecnica.service;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.prueba.tecnica.exception.ResourceNotFoundException;
+import com.prueba.tecnica.model.dto.CuentaDto;
+import com.prueba.tecnica.model.entity.Cliente;
+import com.prueba.tecnica.model.entity.Cuenta;
+import com.prueba.tecnica.repository.CuentaRepository;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class CuentaService {
+	private final CuentaRepository cuentaRepository;
+	
+	public CuentaDto crearCliente(CuentaDto request) {
+
+        if (cuentaRepository.existsByNumerocuenta(request.getNumerocuenta())){
+            throw new IllegalArgumentException("Número de Cuenta ya registrada");
+        }
+
+        Cuenta cuenta = new Cuenta();
+        cuenta.setNumerocuenta(request.getNumerocuenta());
+        cuenta.setTipocuenta(request.getTipocuenta());
+        cuenta.setSaldoinicial(request.getSaldoinicial());
+        if(request.getEstado()!=null) cuenta.setEstado(request.getEstado());
+        
+        Cuenta guardado = cuentaRepository.save(cuenta);
+        return mapearRespuesta(guardado);
+    }
+	
+	public List<CuentaDto> listaCuentas() {
+        return cuentaRepository.findAll()
+                .stream()
+                .map(this::mapearRespuesta)
+                .toList();
+    }
+	
+	public CuentaDto obtenerCuenta(Long id) {
+        Cuenta cuenta = cuentaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Cuenta no encontrada"));
+        return mapearRespuesta(cuenta);
+    }
+	
+    public List<CuentaDto> listarPorCliente(Long clienteid) {
+        return cuentaRepository.findByClienteClienteid(clienteid)
+        		.stream()
+                .map(this::mapearRespuesta)
+                .toList();
+    }
+    
+    public CuentaDto actualizarCuenta(Long id, CuentaDto request) {
+        Cuenta cuenta = cuentaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Cuenta no encontrada"));
+
+        cuenta.setNumerocuenta(request.getNumerocuenta());
+        cuenta.setTipocuenta(request.getTipocuenta());
+        cuenta.setSaldoinicial(request.getSaldoinicial());
+        cuenta.setEstado(request.getEstado());
+        if(request.getClienteid()!=null) {	        
+	        cuenta.setCliente(new Cliente(request.getClienteid()));
+        }
+        return mapearRespuesta(cuentaRepository.save(cuenta));
+    }
+    
+    
+    public void eliminarCuenta(Long id) {
+        if (!cuentaRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Cuenta no encontrado");
+        }
+        cuentaRepository.deleteById(id);
+    }
+	
+	
+	private CuentaDto mapearRespuesta(Cuenta cuenta) {
+		CuentaDto c = CuentaDto.builder()
+        		.cuentaid(cuenta.getCuentaid())
+        		.numerocuenta(cuenta.getNumerocuenta())
+        		.tipocuenta(cuenta.getTipocuenta())
+        		.saldoinicial(cuenta.getSaldoinicial())
+        		.estado(cuenta.getEstado())
+        		.clienteid(cuenta.getCliente().getClienteid())
+        		.build();
+        return c;    
+    }
+
+}

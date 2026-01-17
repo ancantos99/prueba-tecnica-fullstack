@@ -1,0 +1,40 @@
+<h2>{{ esEdicion ? 'Editar Cliente' : 'Nuevo Cliente' }}</h2>
+
+<form [formGroup]="form" (ngSubmit)="guardar()">
+
+  <label>Número de Cuenta</label>
+  <input type="text" formControlName="numerocuenta">
+  <div class="error" *ngIf="form.get('numerocuenta')?.touched && form.get('numerocuenta')?.invalid">
+    Número de cuenta es obligatorio
+  </div>
+
+  <label>Tipo Cuenta</label>
+  <select formControlName="tipocuenta">
+    <option value="">Seleccione</option>
+    <option value="AHORROS">Ahorros</option>
+    <option value="CORRIENTE">Corriente</option>
+  </select>
+  <div class="error" *ngIf="form.get('tipocuenta')?.touched && form.get('tipocuenta')?.invalid">
+    Tipo de Cuenta es obligatorio
+  </div>
+
+  <label>Saldo Inicial (USD)</label>
+  <input type="number" formControlName="saldoinicial">
+  <div class="error" *ngIf="form.get('saldoinicial')?.touched && form.get('saldoinicial')?.invalid">
+    Valor Mínimo $0
+  </div>
+
+  <label>Cliente</label>
+  <select formControlName="clienteid">
+    <option *ngFor="let c of clientes" [value]="c.clienteid">
+      {{ c.nombre }}
+    </option>
+  </select>
+  <div class="error" *ngIf="form.get('clienteid')?.touched && form.get('clienteid')?.invalid">
+    Cliente es Obligatorio
+  </div>
+
+
+  <button type="submit">Guardar</button>
+
+</form>

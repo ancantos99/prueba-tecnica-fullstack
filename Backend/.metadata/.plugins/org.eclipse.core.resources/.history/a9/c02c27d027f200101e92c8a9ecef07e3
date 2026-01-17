@@ -1,0 +1,5 @@
+package com.prueba.tecnica.config;
+
+public class CorsConfig {
+
+}

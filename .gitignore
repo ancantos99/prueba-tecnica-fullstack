@@ -1,0 +1,40 @@
+# --- IDEs and Editors ---
+.vscode/
+*.code-workspace
+
+
+### VS Code ###
+.vscode/
+
+# --- Backend (Spring Boot / Maven / Gradle) ---
+**/.mvn/wrapper/maven-wrapper.jar
+**/target/
+**/build/
+**/out/
+*.class
+*.jar
+*.war
+*.ear
+*.log
+.gradle/
+.settings/
+.project
+.classpath
+bin/
+
+# --- Frontend (Angular / Node) ---
+**/node_modules/
+**/dist/
+**/.angular/
+.npm/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.editorconfig
+**/documentation/
+**/coverage/
+.proxy.config.json
+
+# --- Environment Variables ---
+.env
+.env.local

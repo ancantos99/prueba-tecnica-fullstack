@@ -1,0 +1,27 @@
+package com.prueba.tecnica.model.dto;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class CuentaDto {
+	private Long cuentaid;
+	private String numerocuenta;
+    private String tipocuenta;
+    private BigDecimal saldoinicial;
+    private Boolean estado;
+    private Long clienteid;
+    private String clientenombre;
+    
+    List<MovimientoResponseDto> movimientos;
+    private BigDecimal totaldebito;
+    private BigDecimal totalcredito;
+}

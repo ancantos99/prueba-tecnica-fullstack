@@ -1,0 +1,35 @@
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+.toolbarboton{
+    display: flex;
+    gap: 5px; 
+    justify-content: right;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    border-bottom: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.acciones {
+    display: flex;
+    gap: 5px; 
+}
+
+.infocuenta {
+    background-color: #0056b3;
+    color: white;
+    padding: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}

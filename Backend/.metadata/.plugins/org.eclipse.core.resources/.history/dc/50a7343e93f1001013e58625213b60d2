@@ -1,0 +1,48 @@
+CREATE TABLE clientes (
+    clienteid SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    genero VARCHAR(20),
+    edad INT,
+    identificacion VARCHAR(50) UNIQUE NOT NULL,
+    direccion VARCHAR(150),
+    telefono VARCHAR(50),
+    contrasena VARCHAR(100) NOT NULL,
+    estado BOOLEAN DEFAULT TRUE
+);
+
+CREATE TABLE cuentas (
+    cuentaid SERIAL PRIMARY KEY,
+    clienteid INT NOT NULL,
+    numerocuenta VARCHAR(20) NOT NULL UNIQUE,
+    tipocuenta VARCHAR(50),
+    saldoinicial NUMERIC(15,2) DEFAULT 0,
+    estado BOOLEAN DEFAULT TRUE,
+    FOREIGN KEY (clienteid) REFERENCES clientes(clienteid) ON DELETE CASCADE
+);
+
+CREATE TABLE movimientos (
+    movimientoid SERIAL PRIMARY KEY,
+    cuentaid INT NOT NULL,
+    fecha TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    tipomovimiento VARCHAR(20) NOT NULL, -- "CREDITO" o "DEBITO"
+    valor NUMERIC(15,2) NOT NULL,
+    saldo NUMERIC(15,2) NOT NULL,
+    FOREIGN KEY (cuentaid) REFERENCES cuentas(cuentaid) ON DELETE CASCADE
+);
+
+
+INSERT INTO cliente (nombre, genero, edad, identificacion, direccion, telefono, contrasena, estado)
+VALUES 
+('Juan Perez', 'M', 30, '1234567890', 'Av. Siempre Viva 123', '0999999999', 'pass123', TRUE),
+('Maria Lopez', 'F', 25, '0987654321', 'Calle Falsa 456', '0988888888', 'pass456', TRUE);
+
+INSERT INTO cuenta (cliente_id, numero_cuenta, tipo_cuenta, saldo_inicial, estado)
+VALUES
+(1, 'CUENTA1001', 'AHORROS', 1000.00, TRUE),
+(2, 'CUENTA1002', 'CORRIENTE', 500.00, TRUE);
+
+INSERT INTO movimiento (cuenta_id, tipo_movimiento, valor, saldo)
+VALUES
+(1, 'CREDITO', 500.00, 1500.00),
+(1, 'DEBITO', 200.00, 1300.00),
+(2, 'CREDITO', 300.00, 800.00);

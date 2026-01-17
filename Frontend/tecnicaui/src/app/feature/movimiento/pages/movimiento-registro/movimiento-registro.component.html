@@ -1,0 +1,47 @@
+<h2>Registrar Movimiento</h2>
+
+<form [formGroup]="form" (ngSubmit)="guardar()">
+
+  <label>Cuenta</label>
+  <select formControlName="cuentaid">
+    <option value="">Seleccione</option>
+    <option *ngFor="let c of cuentas" [value]="c.cuentaid">
+      {{ c.numerocuenta }} - {{ c.clientenombre }} - {{ c.saldoinicial }}
+    </option>
+  </select>
+  <div class="error" *ngIf="form.get('cuentaid')?.touched && form.get('cuentaid')?.invalid">
+    Cuenta obligatoria
+  </div>
+
+  <label>Fecha</label><br />
+  <input type="datetime-local" formControlName="fecha" />
+  <div class="error" *ngIf="form.get('fecha')?.touched && form.get('fecha')?.invalid">
+    Fecha es Obligatorio
+  </div>
+
+  <label>Tipo Movimiento</label>
+  <select formControlName="tipomovimiento">
+    <option value="">Seleccione</option>
+    <option value="CREDITO">Crédito</option>
+    <option value="DEBITO">Débito</option>
+  </select>
+  <div class="error" *ngIf="form.get('tipomovimiento')?.touched && form.get('tipomovimiento')?.invalid">
+    Tipo de Movimiento obligatorio
+  </div>
+
+  <label>Valor</label>
+  <input type="number" formControlName="valor" />
+  <div class="error" *ngIf="form.get('valor')?.touched && form.get('valor')?.invalid">
+    Valor Obligatorio y debe ser mayor a 0
+  </div>
+
+  <button type="submit">Guardar</button>
+</form>
+
+<p *ngIf="mensajeExito" style="color: green">
+  {{ mensajeExito }}
+</p>
+
+<p *ngIf="mensajeError" style="color: red">
+  {{ mensajeError }}
+</p>

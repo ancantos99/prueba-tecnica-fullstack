@@ -1,0 +1,50 @@
+CREATE TABLE clientes (
+    clienteid BIGSERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    genero VARCHAR(20),
+    edad INT,
+    identificacion VARCHAR(50) UNIQUE NOT NULL,
+    direccion VARCHAR(150),
+    telefono VARCHAR(50),
+    contrasena VARCHAR(100) NOT NULL,
+    estado BOOLEAN DEFAULT TRUE
+);
+
+CREATE TABLE cuentas (
+    cuentaid BIGSERIAL PRIMARY KEY,
+    clienteid BIGSERIAL NOT NULL,
+    numerocuenta VARCHAR(20) NOT NULL UNIQUE,
+    tipocuenta VARCHAR(50),
+    saldoinicial NUMERIC(15,2) DEFAULT 0,
+    estado BOOLEAN DEFAULT TRUE,
+    FOREIGN KEY (clienteid) REFERENCES clientes(clienteid) ON DELETE CASCADE
+);
+
+CREATE TABLE movimientos (
+    movimientoid BIGSERIAL PRIMARY KEY,
+    cuentaid BIGSERIAL NOT NULL,
+    fecha TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    tipomovimiento VARCHAR(20) NOT NULL, -- "CREDITO" o "DEBITO"
+    saldoanterior NUMERIC(15,2) NOT NULL,
+    valor NUMERIC(15,2) NOT NULL,
+    saldo NUMERIC(15,2) NOT NULL,
+    FOREIGN KEY (cuentaid) REFERENCES cuentas(cuentaid) ON DELETE CASCADE
+);
+
+
+INSERT INTO clientes (nombre, genero, edad, identificacion, direccion, telefono, contrasena, estado)
+VALUES 
+('Jose Lema', 'M', 30, '0923571517', 'Otavalo sn y principal', '098254785', '1234', TRUE),
+('Marianela Montalvo', 'F', 25, '0924785459', 'Amazonas y NNUU', '097548965', '5678', TRUE),
+('Juan Osorio', 'M', 39, '0985457854', '13 junio y Equinoccial', '098874587', '1245', TRUE);
+
+INSERT INTO cuentas (clienteid, numerocuenta, tipocuenta, saldoinicial, estado)
+VALUES
+(1, '478758', 'AHORROS', 2000.00, TRUE),
+(2, '225487', 'CORRIENTE', 100.00, TRUE),
+(3, '495878', 'AHORROS', 0.00, TRUE),
+(2, '496825', 'AHORROS', 540.00, TRUE);
+
+INSERT INTO movimientos (cuentaid, tipomovimiento, saldoanterior, valor, saldo)
+VALUES
+(1, 'DEBITO', 2000.00, -575.00, 1425.00);

@@ -1,0 +1,7 @@
+
+services:
+  frontend:
+    build: .
+    container_name: ptecnica-ui
+    ports:
+        - "4200:80"

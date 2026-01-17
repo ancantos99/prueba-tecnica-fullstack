@@ -1,0 +1,55 @@
+package com.prueba.tecnica.reportes;
+
+import java.io.ByteArrayOutputStream;
+import java.util.List;
+
+import org.springframework.stereotype.Component;
+
+import com.lowagie.text.Chunk;
+import com.lowagie.text.Document;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Paragraph;
+import com.prueba.tecnica.model.dto.BusquedaMovimientosDto;
+import com.prueba.tecnica.model.dto.ClienteDto;
+import com.prueba.tecnica.model.dto.CuentaDto;
+import com.prueba.tecnica.model.dto.MovimientoResponseDto;
+
+@Component
+public class PdfReporteGenerator {
+
+	public byte[] generarEstadoCuentasCliente(List<MovimientoResponseDto> lstmovimiento, 
+			List<CuentaDto> cuentas, ClienteDto cliente, BusquedaMovimientosDto filtro) {
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+        Document document = new Document(PageSize.A4);
+        
+        document.add(new Paragraph("ESTADO DE CUENTA"));
+        document.add(new Paragraph("Cliente: " + cliente.getNombre()));
+        document.add(new Paragraph(
+                "Periodo: " + filtro.getFechainicio() + " - " + filtro.getFechafin()
+        ));
+        document.add(Chunk.NEWLINE);
+        for (CuentaDto cuentadto : cuentas) {
+        	document.add(new Paragraph("Cuenta: " + cuentadto.getNumerocuenta() ));
+            document.add(new Paragraph("Saldo: " + cuentadto.getSaldoinicial() ));
+            
+            List<MovimientoResponseDto> cuentamovimientos = lstmovimiento.stream()
+            		.filter(m -> m.getCuenta().getNumerocuenta().trim().equalsIgnoreCase(cuentadto.getNumerocuenta()))
+            		.toList();
+            
+            for (var m : cuentamovimientos) {
+                /*document.add(new Paragraph(
+                        m.getFecha() + " - " +
+                        m.getTipo() + " - " +
+                        m.getValor()
+                ));*/
+            }
+            
+            /*document.add(new Paragraph("TOTAL DÉBITOS: " + reporte.getTotalDebitos()));
+            document.add(new Paragraph("TOTAL CRÉDITOS: " + reporte.getTotalCreditos()));*/
+            
+            document.close();
+            return out.toByteArray();
+		}
+        
+	}
+}

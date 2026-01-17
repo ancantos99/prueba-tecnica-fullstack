@@ -1,0 +1,28 @@
+<h2>Cuentas</h2>
+
+<div class="toolbar">
+  <input type="text" placeholder="Buscar" (input)="buscar($event)">
+  <button routerLink="/cuentas/nuevo">Nuevo</button>
+</div>
+
+<table>
+  <tr>
+    <th>Número Cta</th>
+    <th>Tipo</th>
+    <th>Cliente</th>
+    <th>Saldo</th>
+    <th>Estado</th>
+    <th>Acciones</th>
+  </tr>
+  <tr *ngFor="let c of filtrados">
+    <td>{{c.numerocuenta}}</td>
+    <td>{{c.tipocuenta}}</td>
+    <td>{{c.clientenombre}}</td>
+    <td>{{c.saldoinicial}}</td>
+    <td>{{c.estado ? 'Activa' : 'Inactiva'}}</td>
+    <td class="acciones">
+      <button [routerLink]="['/cuentas/editar', c.cuentaid]">Editar</button>  
+      <button type="button" (click)="eliminar(c.cuentaid)">Eliminar</button>
+    </td>
+  </tr>
+</table>

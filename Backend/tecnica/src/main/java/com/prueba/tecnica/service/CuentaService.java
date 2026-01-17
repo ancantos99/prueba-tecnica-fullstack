@@ -1,0 +1,20 @@
+package com.prueba.tecnica.service;
+
+import java.util.List;
+
+import com.prueba.tecnica.model.dto.CuentaDto;
+
+
+public interface CuentaService {
+	public CuentaDto crearCuenta(CuentaDto request);
+	
+	public List<CuentaDto> listarCuentas();
+	
+	public CuentaDto obtenerCuenta(Long id);
+	
+    public List<CuentaDto> listarPorCliente(Long clienteid);
+    
+    public CuentaDto actualizarCuenta(Long id, CuentaDto request);
+    
+    public void eliminarCuenta(Long id);
+}

@@ -1,0 +1,17 @@
+package com.prueba.tecnica.model.dto;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter @Setter
+public class MovimientoResponseDto {
+
+    private Long movimientoId;
+    private LocalDateTime fecha;
+    private String tipoMovimiento;
+    private BigDecimal valor;
+    private BigDecimal saldo;
+}

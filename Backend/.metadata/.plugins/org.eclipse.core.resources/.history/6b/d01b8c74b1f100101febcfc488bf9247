@@ -1,0 +1,18 @@
+package com.prueba.tecnica.controller;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.prueba.tecnica.service.MovimientoService;
+
+import lombok.RequiredArgsConstructor;
+
+@RestController
+@RequestMapping("/api/movimientos")
+@RequiredArgsConstructor
+public class MovimientoController {
+
+	private final MovimientoService movimientoservice;
+	
+	
+}

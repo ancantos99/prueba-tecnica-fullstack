@@ -1,0 +1,11 @@
+package com.prueba.tecnica.model.dto;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+public class ReporteEstadoCuentaDto {
+	List<CuentaDto> cuentas;
+	ClienteDto cliente;
+	private LocalDateTime fechainicio;
+	private LocalDateTime fechafin;
+}

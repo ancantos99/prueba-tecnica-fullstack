@@ -1,0 +1,18 @@
+package com.prueba.tecnica.repository;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.prueba.tecnica.model.entity.Movimiento;
+
+public interface MovimientoRepository extends JpaRepository<Movimiento, Long>{
+	List<Movimiento> findByCuentaCuentaid(Long cuentaid);
+	List<Movimiento> findByCuentaClienteClienteidAndFechaBetween(
+            Long clienteid, LocalDateTime desde,LocalDateTime hasta
+    );
+	List<Movimiento> findByCuentaCuentaidAndFechaBetween(
+            Long cuentaid, LocalDateTime desde,LocalDateTime hasta
+    );
+}

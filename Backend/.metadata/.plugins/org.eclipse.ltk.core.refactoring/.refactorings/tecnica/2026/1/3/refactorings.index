@@ -1,0 +1,6 @@
+1768418502368	Rename type 'ClienteRequestDto'
+1768419080592	Rename method 'mapToResponse'
+1768424406285	Delete element
+1768425548683	Rename field 'tipoMovimiento'
+1768505786394	Rename package 'com.prueba.tecnica.service.imp'
+1768576384669	Rename type 'PdfReporteGenerator'

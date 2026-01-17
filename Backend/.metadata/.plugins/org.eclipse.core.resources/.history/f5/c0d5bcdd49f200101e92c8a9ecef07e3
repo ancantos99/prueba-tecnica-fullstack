@@ -1,0 +1,88 @@
+package com.prueba.tecnica.service.impl;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.prueba.tecnica.exception.ResourceNotFoundException;
+import com.prueba.tecnica.model.dto.ClienteDto;
+import com.prueba.tecnica.model.entity.Cliente;
+import com.prueba.tecnica.repository.ClienteRepository;
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class ClienteServiceImpl {
+	private final ClienteRepository clienteRepository;
+
+    public ClienteDto crearCliente(ClienteDto request) {
+
+        if (clienteRepository.existsByIdentificacion(request.getIdentificacion())) {
+            throw new IllegalArgumentException("Identificación ya registrada");
+        }
+
+        Cliente cliente = new Cliente();
+        cliente.setNombre(request.getNombre());
+        cliente.setGenero(request.getGenero());
+        cliente.setEdad(request.getEdad());
+        cliente.setIdentificacion(request.getIdentificacion());
+        cliente.setDireccion(request.getDireccion());
+        cliente.setTelefono(request.getTelefono());
+        cliente.setContrasena(request.getPassword());
+        cliente.setEstado(request.getEstado());
+
+        Cliente guardado = clienteRepository.save(cliente);
+        return mapearRespuesta(guardado);
+    }
+
+    public List<ClienteDto> listarClientes() {
+        return clienteRepository.findAll()
+                .stream()
+                .map(this::mapearRespuesta)
+                .toList();
+    }
+
+    public ClienteDto obtenerCliente(Long id) {
+        Cliente cliente = clienteRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado"));
+        return mapearRespuesta(cliente);
+    }
+
+    public ClienteDto actualizarCliente(Long id, ClienteDto request) {
+        Cliente cliente = clienteRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado"));
+
+        cliente.setNombre(request.getNombre());
+        cliente.setGenero(request.getGenero());
+        cliente.setEdad(request.getEdad());
+        cliente.setIdentificacion(request.getIdentificacion());
+        cliente.setDireccion(request.getDireccion());
+        cliente.setTelefono(request.getTelefono());
+        cliente.setContrasena(request.getPassword());
+        cliente.setEstado(request.getEstado());
+
+        return mapearRespuesta(clienteRepository.save(cliente));
+    }
+
+    public void eliminarCliente(Long id) {
+        if (!clienteRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Cliente no encontrado");
+        }
+        clienteRepository.deleteById(id);
+    }
+
+    private ClienteDto mapearRespuesta(Cliente cliente) {
+        ClienteDto c = ClienteDto.builder()
+        		.clienteid(cliente.getClienteid())
+        		.nombre(cliente.getNombre())
+        		.genero(cliente.getGenero())
+        		.edad(cliente.getEdad())
+        		.direccion(cliente.getDireccion())
+        		.identificacion(cliente.getIdentificacion())
+        		.telefono(cliente.getTelefono())
+        		.estado(cliente.getEstado())
+        		.password(cliente.getContrasena())
+        		.build();
+        return c;    
+    }
+}

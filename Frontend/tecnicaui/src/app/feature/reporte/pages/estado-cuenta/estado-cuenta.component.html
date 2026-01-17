@@ -1,0 +1,51 @@
+<h2>Estado de Cuenta por Cliente</h2>
+
+<div class="toolbar">
+    <select [(ngModel)]="clienteSeleccionado" >
+        <option value="">Seleccione un Cliente</option>
+        <option *ngFor="let c of clientes" [value]="c.clienteid">
+            {{ c.identificacion }} - {{ c.nombre }}
+        </option>
+    </select>
+
+    <label>Fecha de Inicio:</label>
+    <input type="datetime-local" placeholder="Fecha Inicio" [(ngModel)]="fechaInicio" />
+    <label>Fecha de Fin:</label>
+    <input type="datetime-local" placeholder="Fecha Inicio" [(ngModel)]="fechaFin" />
+</div>
+<div class="toolbarboton">
+    <button type="button" (click)="obtenerReporte()">Consultar</button>
+    <button type="button" (click)="obtenerReportepdf()">DescargarPdf</button>
+</div>
+
+<div *ngFor="let cuenta of cuentas">
+<h4 class="infocuenta">
+    <span><b>Cuenta {{cuenta.tipocuenta.toLowerCase()}}: </b>{{cuenta.numerocuenta}} </span>
+    <span><b>Saldo Inicial: </b>{{cuenta.saldoinicial | currency:'USD':'symbol':'1.2-2'}}</span>
+</h4>
+<table>
+    <tr>
+        <th>Fecha</th>
+        <th>Cliente</th>
+        <th>Cuenta</th>
+        <th>Tipo Movimiento</th>
+        <th>Saldo Anterior</th>
+        <th>Movimiento</th>
+        <th>Saldo</th>    
+    </tr>
+    <tr *ngFor="let m of filtrarPorCuenta(cuenta.numerocuenta)">    
+    <td>{{ m.fecha | date:'dd/MM/yyyy HH:mm' }}</td>
+    <td>{{m.cliente.nombre}}</td>
+    <td>{{m.cuenta.numerocuenta}}</td>
+    <td>{{m.tipomovimiento}}</td>
+    <td>{{m.saldoanterior | currency:'USD':'symbol':'1.2-2'}}</td>
+    <td>{{m.valor}}</td>
+    <td>{{m.saldo | currency:'USD':'symbol':'1.2-2'}}</td>    
+    </tr>
+</table>
+
+<div *ngIf="filtrarPorCuenta(cuenta.numerocuenta).length==0">
+      * No hay movimientos para la cuenta
+</div>
+
+</div>

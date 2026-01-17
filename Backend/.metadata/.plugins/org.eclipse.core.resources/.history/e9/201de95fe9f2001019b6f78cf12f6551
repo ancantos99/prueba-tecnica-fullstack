@@ -1,0 +1,19 @@
+package com.prueba.tecnica.reportes;
+
+import java.io.ByteArrayOutputStream;
+import java.util.List;
+
+import org.springframework.stereotype.Component;
+
+import com.prueba.tecnica.model.dto.CuentaDto;
+import com.prueba.tecnica.model.dto.MovimientoResponseDto;
+
+@Component
+public class PdfReporteGenerator {
+
+	public byte[] generarEstadoCuentasCliente(List<MovimientoResponseDto> lstmovimiento, List<CuentaDto> cuentas) {
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+        //Document document = new Document(PageSize.A4);
+        
+	}
+}
