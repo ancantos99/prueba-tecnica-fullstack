@@ -52,6 +52,14 @@ workspacePruebaTecnica/
     * **Frontend (Angular):** [http://localhost:4200](http://localhost:4200)
     * **Backend (Spring Boot):** [http://localhost:8080](http://localhost:8080)
 
+## 🖼️ Imágenes de Demostración
+
+<img width="1069" height="532" alt="image" src="https://github.com/user-attachments/assets/03f7104d-4eac-4310-bcc7-5712ac9ca7f0" />
+
+<img width="1284" height="425" alt="image" src="https://github.com/user-attachments/assets/5e38bea2-e57c-4646-a0aa-5900d33fd9a5" />
+
+<img width="1269" height="488" alt="image" src="https://github.com/user-attachments/assets/ca7899b7-4635-489f-b676-cc76e3fbbea0" />
+
 ---
 
 ## 👤 Autor
